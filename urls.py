@@ -1,33 +1,22 @@
-"""
-URL configuration for campusconnect project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
-from django.urls import path, include
-from .views import home  # Import the home view
+from django.urls import path
+from .views import recruiter_signup, recruiter_login, pending_recruiters, approve_recruiter, reject_recruiter
+from .views import RecruiterSignupView
+from .views import recruiter_signup, ApproveRecruiterView  # Import ApproveRecruiterView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from .views import RecruiterLoginView
 
 
 
 urlpatterns = [
-    path('', home, name='home'),  # Default home page
-    path('admin/', admin.site.urls),
-    path('recruiter/', include('recruiter.urls')),
-    
-    # JWT Token Endpoints
+    path('signup/', recruiter_signup, name='recruiter_signup'),
+    path('login/', recruiter_login, name='recruiter_login'),
+    path('pending/', pending_recruiters, name='pending_recruiters'),
+    path('approve/<int:recruiter_id>/', approve_recruiter, name='approve_recruiter'),
+    path('reject/<int:recruiter_id>/', reject_recruiter, name='reject_recruiter'),
+    path('signup/', RecruiterSignupView.as_view(), name='recruiter-signup'),
+    path('approve/<int:recruiter_id>/', ApproveRecruiterView.as_view(), name='approve-recruiter'),  # Use .as_view() for class-based views
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/recruiter/', include('recruiter.urls')),  # Make sure this exists
+    path('login/', RecruiterLoginView.as_view(), name='recruiter-login'),
+    path('api/recruiter/approve/<int:recruiter_id>/', ApproveRecruiterView.as_view(), name='approve_recruiter'),
 ]
